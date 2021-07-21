@@ -13,12 +13,39 @@ var api = new ParseServer({
   serverURL: `http://localhost:${port}/parse` // Don't forget to change to https if needed
 });
 
-var app = express();
+
+const app = express();
 
 // make the Parse Server available at /parse
 app.use('/parse', api);
 
 
-var httpServer = require('http').createServer(app);
+var dashboard = new ParseDashboard({
+  apps: [
+    {
+      "serverURL": `http://localhost:${port}/parse`,
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "MyApp"
+    }
+  ],
+  users: [
+    {
+      user: 'user',
+      pass: 'pass'
+    }
+  ]
+}, { allowInsecureHTTP: true });
+
+const dashboardApp = express();
+// ParseDashboard takes '/dashboard' as mountpath
+dashboardApp.use('/dashboard', dashboard);
+
+// Mount dashboard at /sub/path/dashboard
+app.use('/sub/path/', dashboardApp);
+
+
+const httpServer = require('http').createServer(app);
 httpServer.listen(port);
 console.log('Listened at ' + `http://localhost:${port}`)
+console.log('Dashboard listening at', `http://localhost:${port}/sub/path/dashboard`)
