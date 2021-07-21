@@ -29,12 +29,6 @@ var dashboard = new ParseDashboard({
       "appName": "MyApp"
     }
   ],
-  users: [
-    {
-      user: 'user',
-      pass: 'pass'
-    }
-  ]
 }, { allowInsecureHTTP: true });
 
 const dashboardApp = express();
